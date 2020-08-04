@@ -29,8 +29,8 @@ tt=1:SR:T+1;
 % fink = fink*(dCBF);
 
 % simulate fin
-fin = ones(1,(T+1)/SR);
-fin(1,3:3+stimlen)=2;
+fin = zeros(1,(T+1)/SR);
+fin(1,3:3+stimlen)=1;
 
 % fin = zeros(1,(T+1)/SR);%zeros(1,T/SR);
 % fin(stimTime) = 1;%rand(size(stimTime));
@@ -57,13 +57,18 @@ Mu.taov = taov;
 Mu.alpha = alpha;
 Mu.tt=tt;
 
-id=fin~=1;
+Mu.epsilon=0.5;
+Mu.na= fin;
+Mu.tau_s=0.8;
+Mu.tau_f=0.4;
+
+id=fin~=0;
 change=find(id==1);
 
 steps=[tt(1) tt(change(1)-1);tt(change(1)) tt(change(end));tt(change(end)) tt(end)];%{[tt(1) tt(change(1)-1)];[tt(change(1)) tt(change(end));[tt(change(end)) tt(end)]}%{tt(1:change(1)-1);tt(change(1):change(end));tt(change(end)+1:end)};
-Y=zeros(length(tt),3);
+Y=zeros(length(tt),4);
 step_t={1:change(1)-1;change(1):change(end);change(end)+1:length(tt)};
-y0_new=[1; 1; 1];
+y0_new=[1; 1; 1; 0];
 %%%%%
 for i=1:3
 tspan = steps(i,:);%steps{i};%1: 0.1:T;%0:SR:T;%[1:T/SR];%
@@ -79,7 +84,7 @@ end
 
 %tt=1:0.1:T+1;
 hbr=Y(:,1);
-hbo=Y(:,2)-Y(:,1);
+%hbo=Y(:,2)-Y(:,1);
 v=Y(:,2);
 
 BOLD=V0.*(k1.*(1-hbr)+k2.*(1-(hbr./v))+k3.*(1-v));
