@@ -5,6 +5,7 @@ function x=deconv_wiener(data,H)
 NFFT=128;
 TR=0.1;
 
+% find noise level from data
 Fs=1/TR;
 f=Fs/NFFT*(0:floor(NFFT/2));
 
@@ -20,6 +21,7 @@ if m<s
     [m,n]=size(data);
 end
 
+% deconvolve data 
 Hf=transpose(fft(padarray(H,[n+2*pad-pad,0],'post')));  %adapt length of HRFs to length of data + 2*length of HRF to adapt for transient effects
 Sf_data=fft(padarray(data,[0,pad],'symmetric'),[],2);   %adapt length of data to length of data +2*length of HRF
 Sf1=1;
